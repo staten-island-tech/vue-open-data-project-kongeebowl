@@ -1,26 +1,28 @@
 <template>
   <div class="container">
-    <PokemonCards
-      v-for="(pkmn, index) in pokemon.results"
-      :key="index"
-      :pokemon="pkmn"
-      :id="index + 1"
-    >
-    </PokemonCards>
+    <div v-for="(person, index) in people" :key="index" :person="person" :id="index + 1">
+      {{ person.pd_desc }}
+    </div>
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import PokemonCards from '../components/PokemonCards.vue'
-const pokemon = ref('')
+import SkinColor from '../components/SkinColor.vue'
+const people = ref([])
 
-async function getPokemon() {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon/?limit=151')
-  let data = await response.json()
-  pokemon.value = data
+async function getPeople() {
+  try {
+    const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json')
+    let data = await response.json()
+    people.value = data
+    console.log(data)
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
 }
+
 onMounted(() => {
-  getPokemon()
+  getPeople()
 })
 </script>
 
