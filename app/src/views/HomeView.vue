@@ -7,7 +7,6 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import SkinColor from '../components/SkinColor.vue'
 const people = ref([])
 
 async function getPeople() {
