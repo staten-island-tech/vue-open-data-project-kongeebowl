@@ -1,8 +1,16 @@
 <template>
   <div>
     <header class="text-center m-auto">
-      <h1 class="text-3xl m-auto text-[#deb363]">a;wuhealiuwehalwiuweh</h1>
+      <h1 class="text-3xl my-8 m-auto text-[#deb363]">Crimes in New York City</h1>
     </header>
+    <nav class="container m-auto flex justify-center">
+      <router-link to="skincolor" class="m-auto dark:md:hover:bg-yellow-600 transition duration-300"
+        >Color Chart</router-link
+      >
+      <router-link to="crime" class="m-auto dark:md:hover:bg-yellow-600 transition duration-300"
+        >Crime Chart</router-link
+      >
+    </nav>
   </div>
 </template>
 
