@@ -2,6 +2,8 @@
   <div></div>
 </template>
 
-<script setup></script>
+<script setup>
+import { Chart } from 'chart.js/auto'
+</script>
 
 <style scoped></style>

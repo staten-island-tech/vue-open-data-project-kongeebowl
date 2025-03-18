@@ -7,7 +7,7 @@
       :id="index + 1"
       class="card w-full sm:w-[90%] md:w-[80%] lg:w-[75%] h-auto rounded-3xl flex flex-col items-center justify-between bg-blue-200 text-center p-2 shadow-sm m-5"
     >
-      {{ perp }}
+      {{ person.perp_race }}
       {{ person.pd_desc }}
     </div>
   </div>
