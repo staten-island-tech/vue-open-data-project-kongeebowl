@@ -1,6 +1,28 @@
 <template>
-  <div class="container m-auto w-3/5 h-3/5">
-    <DonutChart :data="chartData" :options="chartOptions" />
+  <div>
+    <div class="text-center container m-auto">
+      <label for="boro-select" class="text-[#FFFFF0] mx-2">Choose a Borough:</label>
+      <select
+        v-model="boroughs"
+        id="boro-select"
+        @change="getPeople"
+        class="text-[#FFFFF0] bg-[#3d3637]"
+      >
+        <option value="all" selected>All</option>
+        <option value="S">Staten Island</option>
+        <option value="B">Brooklyn</option>
+        <option value="M">Manhattan</option>
+        <option value="Q">Queens</option>
+        <option value="K">Bronx</option>
+      </select>
+    </div>
+    <div class="container m-auto w-3/5 h-3/5">
+      <DonutChart :data="chartData" :options="chartOptions" />
+      <br />
+      <p class="text-center m-auto text-[#fff8a5] my-20 text-2xl">
+        Crimes Comitted In This Borough: {{ crimesComitted }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -52,16 +74,30 @@ const chartOptions = ref({
   },
 })
 
+const boroughs = ref('all')
+const crimesComitted = ref('')
+
 async function getPeople() {
   try {
     const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json')
     const data = await response.json()
 
     const crimeCounts = {}
-    data.forEach((person) => {
-      const crime = person.ofns_desc
-      crimeCounts[crime] = (crimeCounts[crime] || 0) + 1
-    })
+
+    if (boroughs.value === 'all') {
+      data.forEach((person) => {
+        const crime = person.ofns_desc
+        crimeCounts[crime] = (crimeCounts[crime] || 0) + 1
+      })
+      crimesComitted.value = data.length
+    } else {
+      const filteredPeople = data.filter((person) => person.arrest_boro === boroughs.value)
+      crimesComitted.value = filteredPeople.length
+      filteredPeople.forEach((person) => {
+        const crime = person.ofns_desc
+        crimeCounts[crime] = (crimeCounts[crime] || 0) + 1
+      })
+    }
 
     chartData.value = {
       labels: Object.keys(crimeCounts),

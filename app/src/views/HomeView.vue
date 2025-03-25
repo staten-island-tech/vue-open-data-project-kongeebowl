@@ -1,19 +1,17 @@
 <template>
   <div class="container items-center justify-center flex flex-col m-auto">
-    <div
+    <PrintCards
       v-for="(person, index) in people"
       :key="index"
       :person="person"
       :id="index + 1"
-      class="card w-full sm:w-[90%] md:w-[80%] lg:w-[75%] h-auto rounded-3xl flex flex-col items-center justify-between bg-blue-200 text-center p-2 shadow-sm m-5"
-    >
-      {{ person.perp_race }}
-      {{ person.pd_desc }}
-    </div>
+      class="card w-full sm:w-[90%] md:w-[80%] lg:w-[75%] h-auto rounded-3xl flex flex-col items-center justify-between bg-blue-200 text-center p-2 shadow-sm m-5 border-2"
+    />
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
+import PrintCards from '@/components/PrintCards.vue'
 const people = ref([])
 
 async function getPeople() {
