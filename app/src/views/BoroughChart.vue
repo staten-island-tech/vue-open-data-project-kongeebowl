@@ -1,83 +1,100 @@
 <template>
-  <div class="container m-auto w-1/2 h-1/2">
-    <Pie :data="chartData" :options="chartOptions" />
+  <div class="container m-auto w-3/5 h-3/5">
+    <BarChart :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Pie } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  RadialLinearScale,
-} from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, RadialLinearScale)
+import BarChart from '@/components/BarChart.vue'
+import { onMounted, ref } from 'vue'
 
 const chartData = ref({
   labels: [],
   datasets: [
     {
+      label: 'Borough Count',
+      backgroundColor: '#FDD835',
       data: [],
-      backgroundColor: ['red', 'blue', 'yellow'],
-      hoverOffset: 4,
     },
   ],
 })
 
 const chartOptions = ref({
+  scales: {
+    y: {
+      ticks: {
+        color: '#FFFFF0',
+      },
+      grid: {
+        color: '#6c5756',
+      },
+    },
+    x: {
+      ticks: {
+        color: '#FFFFF0',
+      },
+      grid: {
+        color: '#6c5756',
+      },
+    },
+  },
   responsive: true,
   plugins: {
     title: {
       display: true,
-      text: 'Pie Chart Example',
-    },
-    tooltip: {
-      enabled: true,
-    },
-  },
-  aspectRatio: 1,
-  layout: {
-    padding: 20,
-  },
-  legend: {
-    position: 'top',
-    labels: {
+      text: 'Arrests in Each Borough',
       font: {
-        size: 14,
+        size: 20,
+      },
+      color: '#FFFFF0',
+    },
+    legend: {
+      position: 'top',
+      labels: {
+        color: '#FFFFF0',
       },
     },
+    tooltip: {
+      titleColor: '#FFFFF0',
+      bodyColor: '#FFFFF0',
+    },
   },
+  elements: {
+    bar: {
+      borderWidth: 2,
+    },
+  },
+  backgroundColor: '#3d3637',
 })
 
-onMounted(async () => {
+async function getPeople() {
   try {
-    const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json?$limit=100')
+    const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json')
     const data = await response.json()
-    const boroughCounts = {}
-    data.forEach((item) => {
-      const borough = item.arrest_boro
-      boroughCounts[borough] = (boroughCounts[borough] || 0) + 1
+
+    const boroCount = {}
+    data.forEach((person) => {
+      const boro = person.arrest_boro
+      boroCount[boro] = (boroCount[boro] || 0) + 1
     })
 
     chartData.value = {
-      labels: Object.keys(boroughCounts),
+      labels: Object.keys(boroCount),
       datasets: [
         {
-          data: Object.values(boroughCounts),
-          backgroundColor: ['red', 'blue', 'green', 'orange', 'purple'],
-          hoverOffset: 4,
+          label: 'Borough Chart',
+          backgroundColor: '#FDD835',
+          data: Object.values(boroCount),
         },
       ],
     }
   } catch (error) {
     console.error('Error fetching data:', error)
   }
+}
+
+onMounted(() => {
+  getPeople()
 })
 </script>
 

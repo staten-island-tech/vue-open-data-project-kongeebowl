@@ -1,23 +1,12 @@
 <template>
-  <div class="container m-auto w-1/2 h-1/2">
-    <Pie :data="chartData" :options="chartOptions" />
+  <div class="container m-auto w-3/5 h-3/5">
+    <DonutChart :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Pie } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  RadialLinearScale,
-} from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, RadialLinearScale)
+import DonutChart from '@/components/DonutChart.vue'
 
 const chartData = ref({
   labels: [],
@@ -25,7 +14,6 @@ const chartData = ref({
     {
       data: [],
       backgroundColor: ['red', 'blue', 'yellow'],
-      hoverOffset: 4,
     },
   ],
 })
@@ -35,16 +23,25 @@ const chartOptions = ref({
   plugins: {
     title: {
       display: true,
-      text: 'Pie Chart Example',
+      text: 'Crimes Committed',
+      font: {
+        size: 20,
+      },
+      color: '#FFFFF0',
+    },
+    legend: {
+      position: 'top',
+      labels: {
+        color: '#FFFFF0',
+      },
     },
     tooltip: {
-      enabled: true,
+      titleColor: '#FFFFF0',
+      bodyColor: '#FFFFF0',
     },
   },
   aspectRatio: 1,
-  layout: {
-    padding: 20,
-  },
+
   legend: {
     position: 'top',
     labels: {
@@ -55,13 +52,14 @@ const chartOptions = ref({
   },
 })
 
-onMounted(async () => {
+async function getPeople() {
   try {
-    const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json?$limit=100')
+    const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json')
     const data = await response.json()
+
     const crimeCounts = {}
-    data.forEach((item) => {
-      const crime = item.pd_desc
+    data.forEach((person) => {
+      const crime = person.ofns_desc
       crimeCounts[crime] = (crimeCounts[crime] || 0) + 1
     })
 
@@ -69,15 +67,81 @@ onMounted(async () => {
       labels: Object.keys(crimeCounts),
       datasets: [
         {
+          backgroundColor: [
+            '#FF5733',
+            '#33FF57',
+            '#3357FF',
+            '#FF33A1',
+            '#F4D03F',
+            '#1F77B4',
+            '#8E44AD',
+            '#F39C12',
+            '#C0392B',
+            '#16A085',
+            '#27AE60',
+            '#2980B9',
+            '#8E44AD',
+            '#9B59B6',
+            '#34495E',
+            '#E67E22',
+            '#F1C40F',
+            '#2ECC71',
+            '#3498DB',
+            '#9B59B6',
+            '#1ABC9C',
+            '#D35400',
+            '#7F8C8D',
+            '#BDC3C7',
+            '#FF8C00',
+            '#6C3483',
+            '#D32F2F',
+            '#0288D1',
+            '#7B1FA2',
+            '#FF1744',
+            '#00E5FF',
+            '#FF4081',
+            '#64FFDA',
+            '#8D6E63',
+            '#00C853',
+            '#C2185B',
+            '#7C4DFF',
+            '#2196F3',
+            '#009688',
+            '#FF5722',
+            '#CDDC39',
+            '#FFEB3B',
+            '#9E9E9E',
+            '#FF9800',
+            '#3F51B5',
+            '#0097A7',
+            '#FFB300',
+            '#7B1FA2',
+            '#FF6F00',
+            '#2E7D32',
+            '#0288D1',
+            '#5C6BC0',
+            '#512DA8',
+            '#4CAF50',
+            '#FF5252',
+            '#009688',
+            '#FF4081',
+            '#009688',
+            '#795548',
+            '#8D6E63',
+            '#E57373',
+            '#C62828',
+          ],
           data: Object.values(crimeCounts),
-          backgroundColor: ['red', 'blue', 'green', 'orange', 'purple'],
-          hoverOffset: 4,
         },
       ],
     }
   } catch (error) {
     console.error('Error fetching data:', error)
   }
+}
+
+onMounted(() => {
+  getPeople()
 })
 </script>
 
